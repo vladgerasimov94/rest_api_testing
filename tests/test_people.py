@@ -2,7 +2,7 @@ import json
 from uuid import uuid4
 
 import requests
-from assertpy.assertpy import assert_that
+from assertpy.assertpy import assert_that, soft_assertions
 import steps
 
 from config import BASE_URI
@@ -14,11 +14,11 @@ class TestPeople:
         response = requests.get(BASE_URI)
         # response from requests has many useful properties
         # we can assert on the response status code
-        assert_that(response.status_code, description="").is_equal_to(requests.codes.ok)
-        # We can get python dict as response by using .json() method
-        response_text = response.json()
-        first_names = [people['fname'] for people in response_text]
-        assert_that(first_names).contains('Kent')
+        with soft_assertions():
+            assert_that(response.status_code, description="").is_equal_to(requests.codes.ok)
+            # We can get python dict as response by using .json() method
+            response_dict = response.json()
+            assert_that(response_dict).extracting("fname").is_not_empty().contains('Kent')
 
     def test_new_person_can_be_added(self):
         unique_last_name = self._create_new_person()
