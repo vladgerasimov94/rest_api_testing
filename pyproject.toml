@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "rest-api-testing"
+version = "0.1.0"
+description = ""
+authors = ["Vlad <vladgerasimov94@yandex.ru>"]
+readme = "README.md"
+packages = [{include = "rest_api_testing"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+assertpy = "^1.1"
+requests = "^2.30.0"
+pytest = "^7.3.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
