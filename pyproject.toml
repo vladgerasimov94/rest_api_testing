@@ -12,6 +12,7 @@ assertpy = "^1.1"
 requests = "^2.31.0"
 pytest = "^7.3.2"
 lxml = "^4.9.2"
+jsonpath-ng = "^1.5.3"
 
 
 [build-system]
