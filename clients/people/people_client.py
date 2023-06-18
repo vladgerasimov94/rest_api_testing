@@ -1,3 +1,4 @@
+import json
 from json import dumps
 from uuid import uuid4
 
@@ -31,8 +32,10 @@ class PeopleClient(BaseClient):
         response = self.request.post(self.base_url, payload, self.headers)
         return last_name, response
 
-    def read_one_person_by_id(self, person_id):
-        pass
+    def read_one_person_by_id(self, person_id: int):
+        response = self.request.get(f'{BASE_URI}/{person_id}')
+        return response.as_dict
+        # return json.loads(response.text)
 
     def read_all_persons(self):
         return self.request.get(self.base_url)

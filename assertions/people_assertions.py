@@ -1,9 +1,10 @@
 from assertpy import assert_that
 
+from assertions.base_assertions import BaseAssertions
 from clients.people.people_client import people_client
 
 
-class PeopleAssertions:
+class PeopleAssertions(BaseAssertions):
     @staticmethod
     def assert_people_have_person_with_first_name(response, first_name):
         assert_that(response.as_dict).extracting('fname').is_not_empty().contains(first_name)
