@@ -1,36 +1,23 @@
-import requests
 from assertpy import assert_that
-from lxml import etree
 
-from config import COVID_TRACKER_HOST
-from utils.print_helper import pretty_print
+from clients.covid_tracker.covid_tracker_client import covid_tracker_client
+from helpers.covid_tracker_helper import CovidTrackerHelper
 
 
 def test_covid_cases_have_crossed_a_million():
-    response = requests.get(f'{COVID_TRACKER_HOST}/api/v1/summary/latest')
-    pretty_print(response.headers)
-
-    response_xml = response.text
-    xml_tree = etree.fromstring(bytes(response_xml, encoding='utf8'))
-
-    # use .xpath on xml_tree object to evaluate the expression
-    total_cases = xml_tree.xpath("//data/summary/total_cases")[0].text
+    response_xml = covid_tracker_client.get_latest_summary_info()
+    total_cases = CovidTrackerHelper.search_nodes_using_xpath(
+        response_xml, xpath_expression="//data/summary/total_cases"
+    )
     assert_that(int(total_cases)).is_greater_than(1000000)
 
 
 def test_overall_covid_cases_match_sum_of_total_cases_by_country():
-    response = requests.get(f'{COVID_TRACKER_HOST}/api/v1/summary/latest')
-    pretty_print(response.headers)
+    response_xml = covid_tracker_client.get_latest_summary_info()
 
-    response_xml = response.text
-    xml_tree = etree.fromstring(bytes(response_xml, encoding='utf8'))
-
-    overall_cases = int(xml_tree.xpath("//data/summary/total_cases")[0].text)
-    # Another way to specify XPath first and then use to evaluate
-    # on an XML tree
-    search_for = etree.XPath("//data//regions//total_cases")
-    cases_by_country = 0
-    for region in search_for(xml_tree):
-        cases_by_country += int(region.text)
+    overall_cases = int(
+        CovidTrackerHelper.search_nodes_using_xpath(response_xml, xpath_expression="//data/summary/total_cases")
+    )
+    cases_by_country = CovidTrackerHelper.get_covid_cases_by_country(response_xml=response_xml)
 
     assert_that(overall_cases).is_greater_than(cases_by_country)

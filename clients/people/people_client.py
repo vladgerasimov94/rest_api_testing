@@ -1,8 +1,7 @@
-import json
 from json import dumps
 from uuid import uuid4
 
-from clients.people.base_client import BaseClient
+from clients.base_client import BaseClient
 from config import BASE_URI
 from utils.api_request import APIRequest
 
